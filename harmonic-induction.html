@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Proving things about harmonic numbers by induction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f4ff;--ink:#17153b;--mut:#5a5780;--card:#fff;--line:#d8d4f5;--teal:#5b3df5;--tealbg:#ebe7ff;--amber:#c2410c;--amberbg:#fff1e6;--red:#b4233c;--redbg:#fde6ea;--on:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1024;--ink:#ecebff;--mut:#a6a9d6;--card:#181b3a;--line:#2c3060;--teal:#2ee6a6;--tealbg:#10342f;--amber:#ffc857;--amberbg:#3a2e12;--red:#ff8fa3;--redbg:#40202e;--on:#0b0e24}}
+:root[data-theme="dark"]{--bg:#0e1024;--ink:#ecebff;--mut:#a6a9d6;--card:#181b3a;--line:#2c3060;--teal:#2ee6a6;--tealbg:#10342f;--amber:#ffc857;--amberbg:#3a2e12;--red:#ff8fa3;--redbg:#40202e;--on:#0b0e24}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "DM Sans",system-ui,sans-serif}
+main,header .in{max-width:860px;margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:"Sora","DM Sans",sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800;padding-top:28px;margin-bottom:.25em}
+h2{font-size:26px;font-weight:800;margin-top:8px}
+h3{font-size:18px;font-weight:600}
+.sub{color:var(--mut);margin:0 0 16px;max-width:60ch}
+header svg{display:block;width:100%;height:auto;max-height:130px;margin-bottom:6px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);border-bottom:1px solid var(--line);z-index:5}
+nav .in{display:flex;gap:4px;overflow-x:auto;max-width:860px;margin:0 auto;padding:0 20px}
+nav button{font:600 15px "DM Sans",sans-serif;color:var(--mut);background:none;border:0;border-bottom:3px solid transparent;padding:12px 12px;cursor:pointer;white-space:nowrap}
+nav button[aria-selected=true]{color:var(--ink);border-color:var(--teal)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+section{padding:24px 0 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+.def{border-left:5px solid var(--teal);border-radius:4px 10px 10px 4px}
+.math{font-family:"DM Sans",serif;font-size:19px;background:var(--tealbg);padding:8px 12px;border-radius:6px;display:inline-block;margin:4px 0}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+button.b,.row button{font:600 15px "DM Sans",sans-serif;background:var(--teal);color:#fff;border:0;border-radius:6px;padding:9px 16px;cursor:pointer}
+:root[data-theme="dark"] button.b,:root[data-theme="dark"] .row button{color:#0b0e24}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.b,:root:not([data-theme="light"]) .row button{color:#0b0e24}}
+input,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+input[type=range]{padding:0;width:100%;accent-color:var(--teal)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.opts{display:grid;gap:8px}
+.opt{font:500 16px "DM Sans",sans-serif;text-align:left;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px;cursor:pointer}
+.opt:hover{border-color:var(--teal)}
+.step{border-left:5px solid var(--amber);background:var(--card);border-radius:4px 10px 10px 4px;padding:14px 18px;margin:14px 0;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.step.done{border-left-color:var(--teal)}
+.q{font-weight:600}
+.ok{color:var(--teal);font-weight:500;margin:6px 0 0}
+.no{color:var(--red);font-weight:500;margin:8px 0 0}
+.stmt{font-size:19px;font-weight:600;background:var(--amberbg);padding:10px 14px;border-radius:8px}
+.fin{background:var(--tealbg)}
+.grid{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}
+.grid span{min-width:34px;text-align:center;padding:3px 0;border-radius:5px;font-size:14px;font-weight:600}
+.grid .t{background:var(--tealbg);color:var(--teal)}
+.grid .f{background:var(--redbg);color:var(--red)}
+.grid .cur{outline:2px solid var(--ink)}
+.bars rect{fill:var(--teal)}
+.bars .cap{fill:var(--amber)}
+.res{font-variant-numeric:tabular-nums;word-break:break-word}
+.tag{display:inline-block;font-weight:600;border-radius:5px;padding:1px 8px}
+.tag.t{background:var(--tealbg);color:var(--teal)}.tag.f{background:var(--redbg);color:var(--red)}
+.score{font-weight:600;font-size:19px}
+
+header{background:linear-gradient(135deg,var(--tealbg),transparent 75%)}
+header .in{position:relative}
+.tg{position:absolute;top:14px;right:20px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:18px;cursor:pointer}
+nav{backdrop-filter:blur(8px)}
+nav button{border:0;border-radius:999px;margin:8px 2px;padding:8px 16px}
+nav button[aria-selected=true]{background:var(--teal);color:var(--on)}
+.card,.step{box-shadow:0 2px 10px rgba(60,50,140,.08)}
+h1{background:linear-gradient(90deg,var(--ink),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+.prog{height:8px;background:var(--line);border-radius:99px;margin:12px 0;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--amber));border-radius:99px;transition:width .4s}
+.hint{font:600 14px "DM Sans",sans-serif;background:none;border:1px dashed var(--amber);color:var(--amber);border-radius:6px;padding:6px 10px;margin-top:8px;cursor:pointer}
+.dom{display:flex;gap:8px;align-items:flex-end;height:96px;margin:14px 0 8px;overflow-x:auto;padding:0 4px}
+.dom i{flex:0 0 22px;height:80px;background:var(--teal);border-radius:4px;transform-origin:bottom right;transition:transform .35s ease-in,opacity .35s}
+.dom i.fall{transform:rotate(72deg) translateX(8px);opacity:.55}
+.dom i:first-child{background:var(--amber)}
+@media (prefers-reduced-motion:reduce){.dom i,.prog i{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="in"><button class="tg" id="theme" aria-label="Switch light or dark theme">◐</button>
+<h1>Proving things about harmonic numbers by induction</h1>
+<p class="sub">Build each proof one step at a time: base case, induction hypothesis, inductive step. Then test claims yourself and solve the exercises.</p>
+<svg id="hero" class="bars" role="img" aria-label="Bars of height 1/k for k from 1 to 24, stacked left to right"></svg>
+</div></header>
+<nav><div class="in" role="tablist" id="tabs">
+<button role="tab" data-t="learn" aria-selected="true">Definitions</button>
+<button role="tab" data-t="examples" aria-selected="false">Examples</button>
+<button role="tab" data-t="proof" aria-selected="false">Proof lab</button>
+<button role="tab" data-t="exp" aria-selected="false">Experiment</button>
+<button role="tab" data-t="ex" aria-selected="false">Exercises</button>
+</div></nav>
+<main>
+
+<section id="learn">
+<h2>Definitions</h2>
+<div class="card def"><h3>Harmonic number</h3>
+<p>For an integer n ≥ 1, the n-th harmonic number is the sum of the first n reciprocals:</p>
+<p class="math">H<sub>n</sub> = 1 + 1/2 + 1/3 + … + 1/n</p>
+<p>We also define H<sub>0</sub> = 0 (an empty sum).</p></div>
+<div class="card def"><h3>The recurrence</h3>
+<p class="math">H<sub>n+1</sub> = H<sub>n</sub> + 1/(n+1)</p>
+<p>Adding one more term gives the next harmonic number. Every proof below uses this fact in the inductive step.</p></div>
+<div class="card def"><h3>Mathematical induction</h3>
+<p>To prove that P(n) is true for all n ≥ n₀:</p>
+<p><b>Base case.</b> Show P(n₀) is true.<br><b>Induction hypothesis.</b> Assume P(k) is true for some k ≥ n₀.<br><b>Inductive step.</b> Using that assumption, show P(k+1) is true.</p>
+<p>The base case starts the chain and the step passes truth from each number to the next, like dominoes.</p></div>
+<div class="card"><h3>See induction as dominoes</h3>
+<p>The gold domino is the <b>base case</b>. The <b>inductive step</b> says: if domino k falls, domino k+1 falls too. Together, every domino falls.</p>
+<div class="dom" id="dom" aria-hidden="true"></div>
+<div class="row"><button class="b" id="push">Push the first domino</button><button class="b" id="rst" style="background:var(--mut)">Reset</button></div></div>
+<div class="card"><h3>Why harmonic numbers matter</h3>
+<p>The terms 1/k shrink to zero, yet H<sub>n</sub> grows past every bound, only very slowly (about ln n). The first claim in the Proof lab shows this using induction.</p></div>
+</section>
+
+<section id="examples" hidden>
+<h2>Examples</h2>
+<div class="card"><h3>Exact values of H<sub>n</sub></h3>
+<div class="scroll"><table><thead><tr><th>n</th><th>H<sub>n</sub> as a fraction</th><th>Decimal</th></tr></thead><tbody id="tbl"></tbody></table></div></div>
+<div class="card"><h3>Using the recurrence</h3>
+<p>Find H<sub>4</sub> from H<sub>3</sub> = 11/6:</p>
+<p class="math">H<sub>4</sub> = H<sub>3</sub> + 1/4 = 11/6 + 1/4 = 22/12 + 3/12 = 25/12</p>
+<p>Notice that H<sub>4</sub> ≈ 2.083 is already larger than 2. Keep this in mind for the Experiment tab.</p></div>
+<div class="card"><h3>A sum of harmonic numbers</h3>
+<p>H<sub>1</sub> + H<sub>2</sub> + H<sub>3</sub> = 1 + 3/2 + 11/6 = 6/6 + 9/6 + 11/6 = 26/6 = 13/3.</p><p>Now try the formula (n+1)H<sub>n</sub> − n at n = 3: 4 · 11/6 − 3 = 22/3 − 3 = 13/3. Both sides match, which is exactly what Claim B says. The Proof lab shows why this works for every n.</p></div>
+</section>
+
+<section id="proof" hidden>
+<h2>Proof lab</h2>
+<p class="sub">Pick a claim. Answer each question to move the proof forward.</p>
+<div class="row"><label for="pc">Claim</label>
+<select id="pc"><option value="A">A: H(2ⁿ) ≥ 1 + n/2</option><option value="B">B: H₁ + … + Hₙ = (n+1)Hₙ − n</option></select></div>
+<div id="proofbox"></div>
+</section>
+
+<section id="exp" hidden>
+<h2>Experiment</h2>
+<p class="sub">Test a claim for many values of n. Testing never proves a claim, but one failure disproves it.</p>
+<div class="card">
+<div class="row"><label for="cl">Claim</label>
+<select id="cl"><option value="A">A: H(2ⁿ) ≥ 1 + n/2</option><option value="B">B: H₁ + … + Hₙ = (n+1)Hₙ − n</option><option value="C">C: H<sub>n</sub> &lt; 2 for all n ≥ 1</option></select></div>
+<p><label for="n">Value of n: <b id="nv"></b></label></p>
+<input type="range" id="n" min="1" max="30" value="4">
+<p id="out" class="res" role="status"></p>
+<svg id="bars" class="bars" role="img" aria-label="Bars of height 1/k"></svg>
+<p class="sub" style="margin:0">Each bar is one term 1/k. Their total height is H<sub>m</sub>.</p>
+<h3 style="margin-top:14px">Does the claim hold?</h3>
+<div id="grid" class="grid"></div>
+<p id="verdict"></p></div>
+</section>
+
+<section id="ex" hidden>
+<h2>Exercises</h2>
+<p class="sub">Answer fractions as a/b, for example 7/12.</p>
+<div id="exbox"></div>
+<p class="score" id="score"></p>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const fr=(n,d)=>{const g=gcd(n<0n?-n:n,d)||1n;return{n:n/g,d:d/g}};
+const add=(a,b)=>fr(a.n*b.d+b.n*a.d,a.d*b.d);
+const fs=f=>f.d===1n?String(f.n):f.n+"/"+f.d;
+const Hf=[fr(0n,1n)];for(let k=1;k<=30;k++)Hf.push(add(Hf[k-1],fr(1n,BigInt(k))));
+const dec=f=>(Number(f.n)/Number(f.d)).toFixed(5);
+
+/* bars */
+function bars(el,m,w,h){
+  el.setAttribute("viewBox",`0 0 ${w} ${h}`);let s="",x=0,bw=w/m;
+  for(let k=1;k<=m;k++){const bh=(h-6)/k;s+=`<rect fill-opacity="${(1-k/(m*1.5)).toFixed(2)}" x="${(k-1)*bw+1}" y="${h-bh}" width="${Math.max(bw-2,1)}" height="${bh}" rx="2"/>`}
+  el.innerHTML=s;
+}
+bars($("#hero"),24,720,120);
+
+/* tabs */
+$("#tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.querySelectorAll("section").forEach(s=>s.hidden=s.id!==b.dataset.t);
+  window.scrollTo(0,0);
+});
+
+/* examples table */
+$("#tbl").innerHTML=Hf.slice(1,11).map((f,i)=>`<tr><td>${i+1}</td><td>${fs(f)}</td><td>${dec(f)}</td></tr>`).join("");
+
+/* proof lab */
+const S=(x)=>x; 
+const claims={
+A:{stmt:"For every integer n ≥ 0: H<sub>2<sup>n</sup></sub> ≥ 1 + n/2",
+stages:[
+{h:"Base case",t:"Check the smallest value, n = 0. The left side is H<sub>2<sup>0</sup></sub> = H<sub>1</sub>, and the right side is 1 + 0/2 = 1.",q:"What is H<sub>1</sub>?",type:"in",ans:["1"],ok:"H<sub>1</sub> = 1 ≥ 1, so the claim holds for n = 0."},
+{h:"Induction hypothesis",t:"Now fix some k ≥ 0 and assume the claim holds for that k only.",q:"Which statement do we assume?",type:"mc",opts:["H<sub>2<sup>k+1</sup></sub> ≥ 1 + (k+1)/2","H<sub>k</sub> ≥ 1 + k/2","H<sub>2<sup>k</sup></sub> ≥ 1 + k/2","H<sub>2<sup>k</sup></sub> = 1 + k/2"],ans:2,ok:"We assume P(k): H<sub>2<sup>k</sup></sub> ≥ 1 + k/2. The target P(k+1) is what we must prove."},
+{h:"Inductive step: split the sum",t:"Goal: H<sub>2<sup>k+1</sup></sub> ≥ 1 + (k+1)/2. Split off the first 2<sup>k</sup> terms:<br>H<sub>2<sup>k+1</sup></sub> = H<sub>2<sup>k</sup></sub> + ( 1/(2<sup>k</sup>+1) + 1/(2<sup>k</sup>+2) + … + 1/2<sup>k+1</sup> ).",q:"How many terms are in the bracket?",type:"mc",opts:["k","2<sup>k+1</sup>","1","2<sup>k</sup>"],ans:3,ok:"2<sup>k+1</sup> − 2<sup>k</sup> = 2<sup>k</sup> terms."},
+{h:"Inductive step: bound the bracket",t:"Each of the 2<sup>k</sup> terms is at least as large as the smallest one, 1/2<sup>k+1</sup>.",q:"So the bracket is at least…",type:"mc",opts:["1","1/2","1/4","2<sup>k</sup>"],ans:1,ok:"2<sup>k</sup> · 1/2<sup>k+1</sup> = 1/2."}
+],
+end:"By the hypothesis, H<sub>2<sup>k+1</sup></sub> ≥ (1 + k/2) + 1/2 = 1 + (k+1)/2, which is P(k+1). With the base case, the claim holds for all n ≥ 0. Since 1 + n/2 grows without bound, H<sub>n</sub> does too. ∎"},
+B:{stmt:"For every integer n ≥ 1: H<sub>1</sub> + H<sub>2</sub> + … + H<sub>n</sub> = (n+1)H<sub>n</sub> − n",
+stages:[
+{h:"Base case",t:"Check n = 1. The left side is H<sub>1</sub> = 1.",q:"What is the right side, (1+1)H<sub>1</sub> − 1?",type:"in",ans:["1"],ok:"2 · 1 − 1 = 1, which equals the left side."},
+{h:"Induction hypothesis",t:"Fix some m ≥ 1 and assume the claim for m.",q:"Which statement do we assume?",type:"mc",opts:["H<sub>1</sub> + … + H<sub>m</sub> = (m+1)H<sub>m</sub> − m","H<sub>1</sub> + … + H<sub>m+1</sub> = (m+2)H<sub>m+1</sub> − (m+1)","H<sub>m</sub> = (m+1)H<sub>m</sub> − m","H<sub>1</sub> + … + H<sub>m</sub> = H<sub>m</sub>"],ans:0,ok:"We assume P(m). The target is P(m+1): the sum up to H<sub>m+1</sub> equals (m+2)H<sub>m+1</sub> − (m+1)."},
+{h:"Inductive step: add one term",t:"Add H<sub>m+1</sub> to both sides of the hypothesis:<br>H<sub>1</sub> + … + H<sub>m+1</sub> = (m+1)H<sub>m</sub> − m + H<sub>m+1</sub>.<br>We want everything in terms of H<sub>m+1</sub>.",q:"Which identity lets us replace H<sub>m</sub>?",type:"mc",opts:["H<sub>m</sub> = H<sub>m+1</sub> + 1/(m+1)","H<sub>m</sub> = H<sub>m+1</sub> / (m+1)","H<sub>m</sub> = H<sub>m+1</sub> − 1/(m+1)","H<sub>m</sub> = 1/m"],ans:2,ok:"This is the recurrence H<sub>m+1</sub> = H<sub>m</sub> + 1/(m+1) rearranged."},
+{h:"Inductive step: simplify",t:"Substitute: (m+1)(H<sub>m+1</sub> − 1/(m+1)) − m + H<sub>m+1</sub>.",q:"What does it simplify to?",type:"mc",opts:["(m+2)H<sub>m+1</sub> − (m+1)","(m+1)H<sub>m+1</sub> − m","(m+2)H<sub>m+1</sub> − m","(m+1)H<sub>m+1</sub> − (m+1)"],ans:0,ok:"(m+1)H<sub>m+1</sub> − 1 − m + H<sub>m+1</sub> = (m+2)H<sub>m+1</sub> − (m+1)."}
+],
+end:"The result is exactly P(m+1). With the base case at n = 1, the formula holds for every n ≥ 1. ∎"}
+};
+let ps={c:"A",i:0};
+const norm=s=>String(s).toLowerCase().replace(/\s+/g,"");
+function renderProof(){
+  const c=claims[ps.c];let h=`<p class="stmt">${c.stmt}</p><div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(100*Math.min(ps.i,c.stages.length)/c.stages.length)}"><i style="width:${100*Math.min(ps.i,c.stages.length)/c.stages.length}%"></i></div>`;
+  c.stages.forEach((s,i)=>{
+    if(i>ps.i)return;const d=i<ps.i;
+    h+=`<div class="step${d?" done":""}"><h3>${s.h}</h3><p>${s.t}</p><p class="q">${s.q}</p>`;
+    if(d)h+=`<p class="ok">✓ ${s.ok}</p>`;
+    else if(s.type==="in")h+=`<div class="row"><input id="inp" aria-label="Your answer" autocomplete="off"><button id="chk">Check</button></div><p id="fb" role="status"></p>`;
+    else h+=`<div class="opts">${s.opts.map((o,j)=>`<button class="opt" data-j="${j}">${o}</button>`).join("")}</div><button class="hint" id="hint">Hint: remove a wrong option</button><p id="fb" role="status"></p>`;
+    h+="</div>";
+  });
+  if(ps.i>=c.stages.length)h+=`<div class="step done fin"><h3>Conclusion</h3><p>${c.end}</p><button class="b" id="again">Restart this proof</button></div>`;
+  $("#proofbox").innerHTML=h;
+}
+function answer(good,s){
+  if(good){ps.i++;renderProof()}
+  else $("#fb").innerHTML=`<span class="no">Not quite. ${s.type==="in"?"Compute it from the definition and try again.":"Reread the step above and try another option."}</span>`;
+}
+$("#proofbox").addEventListener("click",e=>{
+  const c=claims[ps.c],s=c.stages[ps.i];
+  if(e.target.id==="again"){ps.i=0;renderProof();return}
+  if(!s)return;
+  if(e.target.id==="hint"){const w=[...document.querySelectorAll("#proofbox .opt")].filter(o=>+o.dataset.j!==s.ans&&!o.hidden);if(w.length>1)w[0].hidden=true;if(w.length<=2)e.target.hidden=true;return}
+  if(e.target.closest(".opt"))answer(+e.target.closest(".opt").dataset.j===s.ans,s);
+  else if(e.target.id==="chk")answer(s.ans.includes(norm($("#inp").value)),s);
+});
+$("#proofbox").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="inp")$("#chk").click()});
+$("#pc").onchange=e=>{ps={c:e.target.value,i:0};renderProof()};
+renderProof();
+
+/* experiment */
+const cfg={A:{min:0,max:6,v:3},B:{min:1,max:30,v:5},C:{min:1,max:30,v:4}};
+function test(c,i){
+  if(c==="A"){const m=2**i;let h=0;for(let k=1;k<=m;k++)h+=1/k;const r=1+i/2;
+    return{ok:h>=r-1e-12,txt:`H<sub>${m}</sub> ≈ ${h.toFixed(4)} and 1 + ${i}/2 = ${r}. Is ${h.toFixed(4)} ≥ ${r}?`,m}}
+  if(c==="B"){let l=fr(0n,1n);for(let k=1;k<=i;k++)l=add(l,Hf[k]);const H=Hf[i];
+    const r=fr(BigInt(i+1)*H.n-BigInt(i)*H.d,H.d);
+    return{ok:l.n===r.n&&l.d===r.d,txt:`Left side = ${fs(l)}. Right side = ${i+1} · H<sub>${i}</sub> − ${i} = ${fs(r)}.`,m:i}}
+  const H=Hf[i];return{ok:H.n<2n*H.d,txt:`H<sub>${i}</sub> = ${fs(H)} ≈ ${dec(H)}. Is that below 2?`,m:i};
+}
+function runExp(){
+  const c=$("#cl").value,n=+$("#n").value,r=test(c,n);
+  $("#nv").textContent=n;
+  $("#out").innerHTML=`${r.txt} <span class="tag ${r.ok?"t":"f"}">${r.ok?"holds":"fails"}</span>`;
+  bars($("#bars"),r.m,720,110);
+  let g="",bad=null;
+  for(let i=cfg[c].min;i<=cfg[c].max;i++){const t=test(c,i).ok;if(!t&&bad===null)bad=i;g+=`<span class="${t?"t":"f"}${i===n?" cur":""}">${i}</span>`}
+  $("#grid").innerHTML=g;
+  $("#verdict").innerHTML=bad===null?`The claim holds for every value from ${cfg[c].min} to ${cfg[c].max}. That is good evidence, but only an induction proof covers all n. Claims A and B are proved in the Proof lab.`:`<b>Counterexample found at n = ${bad}.</b> One failure is enough to disprove the claim, so no induction proof can exist. Try to see where a proof would get stuck: the step needs 1/(n+1) to fit inside the gap below 2, and the gap shrinks faster than the terms.`;
+}
+$("#cl").onchange=()=>{const k=cfg[$("#cl").value],n=$("#n");n.min=k.min;n.max=k.max;n.value=k.v;runExp()};
+$("#n").oninput=runExp;
+$("#cl").onchange();
+
+/* exercises */
+const ex=[
+{q:"Compute H<sub>5</sub> as a fraction.",type:"in",ans:["137/60"],ok:"H<sub>5</sub> = 25/12 + 1/5 = 125/60 + 12/60 = 137/60."},
+{q:"Compute H<sub>6</sub> − H<sub>4</sub> as a fraction.",type:"in",ans:["11/30"],ok:"It is just the two missing terms: 1/5 + 1/6 = 11/30."},
+{q:"Claim: 1/(1·2) + 1/(2·3) + … + 1/(n(n+1)) = n/(n+1). In the inductive step we add 1/((k+1)(k+2)) to k/(k+1). What is the result?",type:"mc",opts:["(k+1)/(k+2)","k/(k+2)","(k+2)/(k+1)","1/(k+2)"],ans:0,ok:"k/(k+1) + 1/((k+1)(k+2)) = (k(k+2)+1)/((k+1)(k+2)) = (k+1)²/((k+1)(k+2)) = (k+1)/(k+2)."},
+{q:"Claim: H<sub>n</sub> ≤ n for all n ≥ 1. In the step we write H<sub>k+1</sub> = H<sub>k</sub> + 1/(k+1) ≤ k + 1/(k+1). Why is this at most k + 1?",type:"mc",opts:["Because H<sub>k</sub> = k","Because 1/(k+1) ≤ 1 for k ≥ 1","Because k + 1/(k+1) is an integer","Because the base case is true"],ans:1,ok:"Since 1/(k+1) ≤ 1, we get k + 1/(k+1) ≤ k + 1."},
+{q:"Someone claims H<sub>n</sub> &lt; 2 for all n ≥ 1. What is the smallest n that disproves it?",type:"in",ans:["4"],ok:"H<sub>4</sub> = 25/12 > 2, while H<sub>3</sub> = 11/6 < 2. (Use the Experiment tab to see this.)"}
+];
+let sc=ex.map(()=>null);
+function renderEx(){
+  $("#exbox").innerHTML=ex.map((x,i)=>{
+    let h=`<div class="card"><p class="q">${i+1}. ${x.q}</p>`;
+    if(sc[i]===true)h+=`<p class="ok">✓ ${x.ok}</p>`;
+    else{
+      h+=x.type==="in"?`<div class="row"><input data-i="${i}" aria-label="Answer to question ${i+1}" autocomplete="off"><button data-chk="${i}">Check</button></div>`
+        :`<div class="opts">${x.opts.map((o,j)=>`<button class="opt" data-i="${i}" data-j="${j}">${o}</button>`).join("")}</div>`;
+      if(sc[i]===false)h+=`<p class="no">Not quite. Try again.</p>`;
+    }
+    return h+"</div>";
+  }).join("");
+  const d=sc.filter(v=>v===true).length;
+  $("#score").textContent=d===ex.length?`All ${ex.length} solved. Well done!`:`Solved: ${d} of ${ex.length}`;
+}
+function grade(i,good){sc[i]=good;renderEx()}
+$("#exbox").addEventListener("click",e=>{
+  const o=e.target.closest(".opt"),c=e.target.closest("[data-chk]");
+  if(o){const i=+o.dataset.i;grade(i,+o.dataset.j===ex[i].ans)}
+  else if(c){const i=+c.dataset.chk;grade(i,ex[i].ans.includes(norm(document.querySelector(`input[data-i="${i}"]`).value)))}
+});
+$("#exbox").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches("input")){const i=+e.target.dataset.i;grade(i,ex[i].ans.includes(norm(e.target.value)))}});
+renderEx();
+
+const dm=$("#dom");dm.innerHTML="<i></i>".repeat(12);let tm=[];
+$("#push").onclick=()=>{tm.forEach(clearTimeout);[...dm.children].forEach((d,i)=>{tm[i]=setTimeout(()=>d.classList.add("fall"),i*220)})};
+$("#rst").onclick=()=>{tm.forEach(clearTimeout);[...dm.children].forEach(d=>d.classList.remove("fall"))};
+$("#theme").onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");r.dataset.theme=cur==="dark"?"light":"dark"};
+</script>
+</body>
+</html>
